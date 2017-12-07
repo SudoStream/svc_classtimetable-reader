@@ -9,7 +9,7 @@ enablePlugins(DockerPlugin)
 name := "classtimetable-reader"
 organization := "io.sudostream"
 scalaVersion := "2.11.8"
-version := "0.0.1-1"
+version := "0.0.1-2"
 
 //docker
 dockerBaseImage := "anapsix/alpine-java:8_server-jre"
@@ -32,8 +32,6 @@ libraryDependencies ++= {
   val akkaHttpVersion = "10.0.10"
   Seq(
     "io.sudostream.timetoteach" %% "messages" % "0.0.11-34",
-    "com.typesafe.play" %% "play-json" % "2.6.7",
-
     "com.typesafe.akka" %% "akka-actor" % akkaV,
     "com.typesafe.akka" %% "akka-stream" % akkaV,
     "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,

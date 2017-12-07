@@ -11,7 +11,7 @@ class MongoFindQueriesImplTest extends FunSuite {
     assert(maybeLatestClassTimetableDoc.isDefined)
   }
 
-  test("Extracting the latest document of valid docs is 10000000003") {
+  test("Extracting the latest document of valid docs is 10000000004") {
     val maybeLatestClassTimetableDoc = MongoFindQueriesImpl.extractLatestClassTimetable(createSomeClassTimetableDocuments())
     assert(maybeLatestClassTimetableDoc.get.getNumber("epochMillisUTC").longValue() === 10000000003L)
   }
@@ -69,7 +69,7 @@ class MongoFindQueriesImplTest extends FunSuite {
       )
     ) ::
       BsonDocument(
-        "epochMillisUTC" -> BsonNumber(10000000001L),
+        "epochMillisUTC" -> BsonNumber(10000000004L),
         "className" -> "P3AB",
         "classTimetables" -> BsonDocument(
           "schoolTimes" -> BsonArray(
