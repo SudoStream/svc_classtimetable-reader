@@ -46,8 +46,8 @@ class HttpRoutes(dao: UserReaderDao,
         (classNameOption, timeToTeachUserIdOption) =>
           get {
             val initialRequestReceived = Instant.now().toEpochMilli
-            log.debug(s"Looking for Class Name ${classNameOption.getOrElse("NONE")} & " +
-              s" tttId ${timeToTeachUserIdOption.getOrElse("NONE")}")
+            log.debug(s"Looking for className '${classNameOption.getOrElse("NONE")}' & tttId '${timeToTeachUserIdOption.getOrElse("NONE")}'")
+
             failWith(new NotImplementedException())
           }
       }
