@@ -1,12 +1,19 @@
 package io.sudostream.classtimetablereader.dao
 
-import io.sudostream.classtimetablereader.dao.mongo.MongoFindQueriesImpl
 import org.scalatest.FunSuite
 
-class MongoClassTimetableBsonToModelTranslatorTest extends FunSuite {
+class MongoClassTimetableBsonToModelTranslatorTest extends FunSuite with MongoClassTimetableBsonToModelTranslatorTestHelper {
+
   test("Calling translateBsonToClassTimetable with empty Bson returns none") {
     val translator = new MongoClassTimetableBsonToModelTranslator()
-    assert(translator.translateMaybeBsonToMaybeClassTimetable(None) === None )
+    assert(translator.translateMaybeBsonToMaybeClassTimetable(None) === None)
   }
+
+  test("Calling translateBsonToClassTimetable with valid Bson returns defined") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    val maybeClassTimetable = translator.translateBsonToMaybeClassTimetable(createValidClassTimetableBson)
+    assert(maybeClassTimetable.isDefined)
+  }
+
 
 }

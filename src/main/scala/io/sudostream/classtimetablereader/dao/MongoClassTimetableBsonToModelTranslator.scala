@@ -12,6 +12,8 @@ class MongoClassTimetableBsonToModelTranslator() {
     }
   }
 
-  def translateBsonToMaybeClassTimetable(classTimetableBson: BsonDocument): Option[ClassTimetable] = ???
+  def translateBsonToMaybeClassTimetable(classTimetableBson: BsonDocument): Option[ClassTimetable] = {
+    None
+  }
 
 }
