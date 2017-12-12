@@ -1,6 +1,5 @@
 package io.sudostream.classtimetablereader.api.http
 
-import java.io.ByteArrayOutputStream
 import java.time.Instant
 
 import akka.actor.ActorSystem
@@ -12,21 +11,22 @@ import akka.stream.Materializer
 import akka.util.Timeout
 import io.sudostream.classtimetablereader.api.kafka.StreamingComponents
 import io.sudostream.classtimetablereader.config.ActorSystemWrapper
-import io.sudostream.classtimetablereader.dao.UserReaderDao
+import io.sudostream.classtimetablereader.dao.{ClassTimetableDao, MongoClassTimetableBsonToModelTranslator}
+import io.sudostream.classtimetablereader.model.{ClassName, TimeToTeachId}
 import io.sudostream.timetoteach.kafka.serializing.systemwide.classtimetable.ClassTimetableSerializer
 import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.ClassTimetable
-import org.apache.avro.io.{DatumWriter, EncoderFactory}
-import org.apache.avro.specific.SpecificDatumWriter
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.concurrent.duration._
+import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success}
 
-class HttpRoutes(dao: UserReaderDao,
-                 actorSystemWrapper: ActorSystemWrapper,
-                 streamingComponents: StreamingComponents
+class HttpRoutes(
+                  classTimetableDao: ClassTimetableDao,
+                  actorSystemWrapper: ActorSystemWrapper,
+                  streamingComponents: StreamingComponents,
+                  classTimeTablePersistenceLayer: MongoClassTimetableBsonToModelTranslator
                 )
-  extends Health with PerstistanceHelper {
+  extends Health {
   implicit val system: ActorSystem = actorSystemWrapper.system
   implicit val executor: ExecutionContextExecutor = system.dispatcher
   implicit val materializer: Materializer = actorSystemWrapper.materializer
@@ -42,8 +42,9 @@ class HttpRoutes(dao: UserReaderDao,
             val initialRequestReceived = Instant.now().toEpochMilli
             log.debug(s"Looking for className '${classNameOption.getOrElse("NONE")}' & tttId '${timeToTeachUserIdOption.getOrElse("NONE")}'")
 
-            // TODO: fetch the classtimetable
-            val futureMaybeClassTimetable : Future[Option[ClassTimetable]] = searchForTimeTable(classNameOption, timeToTeachUserIdOption)
+            val className = ClassName(classNameOption.getOrElse(""))
+            val tttUserId = TimeToTeachId(timeToTeachUserIdOption.getOrElse(""))
+            val futureMaybeClassTimetable: Future[Option[ClassTimetable]] = classTimetableDao.findClassTimetable(className, tttUserId)
             processClassTimetableFuture(futureMaybeClassTimetable)
           }
       }

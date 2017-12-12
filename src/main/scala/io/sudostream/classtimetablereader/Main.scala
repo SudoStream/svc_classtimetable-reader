@@ -8,6 +8,7 @@ import io.sudostream.classtimetablereader.api.http.HttpRoutes
 import io.sudostream.classtimetablereader.api.kafka.StreamingComponents
 import io.sudostream.classtimetablereader.config.{ActorSystemWrapper, ConfigHelper}
 import io.sudostream.classtimetablereader.dao._
+import io.sudostream.classtimetablereader.dao.mongo._
 
 // running in IDE
 // -Djavax.net.ssl.keyStore=/etc/ssl/cacerts
@@ -20,9 +21,10 @@ object Main extends App with MiniKubeHelper {
 
   lazy val httpRoutes: HttpRoutes = wire[HttpRoutes]
   lazy val mongoDbConnectionWrapper: MongoDbConnectionWrapper = wire[MongoDbConnectionWrapperImpl]
-  lazy val usersDao: UserReaderDao = wire[MongoDbUserReaderDao]
+  lazy val usersDao: ClassTimetableDao = wire[MongoDbClassTimetableDao]
   lazy val actorSystemWrapper: ActorSystemWrapper = wire[ActorSystemWrapper]
   lazy val mongoFindQueries: MongoFindQueriesProxy = wire[MongoFindQueriesImpl]
+  lazy val classTimetableDaoTranslator = wire[MongoClassTimetableBsonToModelTranslator]
 
   implicit val theActorSystem: ActorSystem = actorSystemWrapper.system
   val logger = Logging(theActorSystem, getClass)

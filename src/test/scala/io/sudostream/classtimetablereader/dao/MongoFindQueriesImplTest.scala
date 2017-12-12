@@ -1,6 +1,7 @@
 package io.sudostream.classtimetablereader.dao
 
 
+import io.sudostream.classtimetablereader.dao.mongo.MongoFindQueriesImpl
 import org.mongodb.scala.bson.{BsonArray, BsonDocument, BsonNumber}
 import org.scalatest.FunSuite
 
@@ -112,50 +113,50 @@ class MongoFindQueriesImplTest extends FunSuite {
           )
         )
       ) ::
-    BsonDocument(
-      "epochMillisUTC" -> BsonNumber(10000000003L),
-      "className" -> "P3AB",
-      "classTimetables" -> BsonDocument(
-        "schoolTimes" -> BsonArray(
-          BsonDocument(
-            "sessionBoundaryName" -> "lunch-starts",
-            "boundaryStartTime" -> "12:00",
-            "boundaryType" -> "END_OF_TEACHING_SESSION",
-            "sessionName" -> ""
-          ),
-          BsonDocument(
-            "sessionBoundaryName" -> "lunch-ends",
-            "boundaryStartTime" -> "13:00",
-            "boundaryType" -> "START_OF_TEACHING_SESSION",
-            "sessionName" -> "AfternoonSession"
-          ),
-          BsonDocument(
-            "sessionBoundaryName" -> "morning-break-ends",
-            "boundaryStartTime" -> "10:45",
-            "boundaryType" -> "START_OF_TEACHING_SESSION",
-            "sessionName" -> "LateMorningSession"
-          ),
-          BsonDocument(
-            "sessionBoundaryName" -> "morning-break-starts",
-            "boundaryStartTime" -> "10:30",
-            "boundaryType" -> "END_OF_TEACHING_SESSION",
-            "sessionName" -> ""
-          ),
-          BsonDocument(
-            "sessionBoundaryName" -> "school-day-ends",
-            "boundaryStartTime" -> "15:00",
-            "boundaryType" -> "END_OF_TEACHING_SESSION",
-            "sessionName" -> ""
-          ),
-          BsonDocument(
-            "sessionBoundaryName" -> "school-day-starts",
-            "boundaryStartTime" -> "09:00",
-            "boundaryType" -> "START_OF_TEACHING_SESSION",
-            "sessionName" -> "EarlyMorningSession"
+      BsonDocument(
+        "epochMillisUTC" -> BsonNumber(10000000003L),
+        "className" -> "P3AB",
+        "classTimetables" -> BsonDocument(
+          "schoolTimes" -> BsonArray(
+            BsonDocument(
+              "sessionBoundaryName" -> "lunch-starts",
+              "boundaryStartTime" -> "12:00",
+              "boundaryType" -> "END_OF_TEACHING_SESSION",
+              "sessionName" -> ""
+            ),
+            BsonDocument(
+              "sessionBoundaryName" -> "lunch-ends",
+              "boundaryStartTime" -> "13:00",
+              "boundaryType" -> "START_OF_TEACHING_SESSION",
+              "sessionName" -> "AfternoonSession"
+            ),
+            BsonDocument(
+              "sessionBoundaryName" -> "morning-break-ends",
+              "boundaryStartTime" -> "10:45",
+              "boundaryType" -> "START_OF_TEACHING_SESSION",
+              "sessionName" -> "LateMorningSession"
+            ),
+            BsonDocument(
+              "sessionBoundaryName" -> "morning-break-starts",
+              "boundaryStartTime" -> "10:30",
+              "boundaryType" -> "END_OF_TEACHING_SESSION",
+              "sessionName" -> ""
+            ),
+            BsonDocument(
+              "sessionBoundaryName" -> "school-day-ends",
+              "boundaryStartTime" -> "15:00",
+              "boundaryType" -> "END_OF_TEACHING_SESSION",
+              "sessionName" -> ""
+            ),
+            BsonDocument(
+              "sessionBoundaryName" -> "school-day-starts",
+              "boundaryStartTime" -> "09:00",
+              "boundaryType" -> "START_OF_TEACHING_SESSION",
+              "sessionName" -> "EarlyMorningSession"
+            )
           )
         )
-      )
-    ) :: Nil
+      ) :: Nil
   }
 
 }
