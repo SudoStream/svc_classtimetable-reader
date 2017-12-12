@@ -2,29 +2,23 @@ package io.sudostream.classtimetablereader.api.http
 
 import java.io.ByteArrayOutputStream
 import java.time.Instant
-import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.event.LoggingAdapter
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import akka.kafka.scaladsl.Producer
 import akka.stream.Materializer
-import akka.stream.scaladsl.Source
 import akka.util.Timeout
-import io.sudostream.timetoteach.messages.events.SystemEvent
-import io.sudostream.timetoteach.messages.systemwide.model.{SocialNetwork, User}
-import io.sudostream.timetoteach.messages.systemwide.{SystemEventType, TimeToTeachApplication}
 import io.sudostream.classtimetablereader.api.kafka.StreamingComponents
 import io.sudostream.classtimetablereader.config.ActorSystemWrapper
 import io.sudostream.classtimetablereader.dao.UserReaderDao
+import io.sudostream.timetoteach.kafka.serializing.systemwide.classtimetable.ClassTimetableSerializer
+import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.ClassTimetable
 import org.apache.avro.io.{DatumWriter, EncoderFactory}
 import org.apache.avro.specific.SpecificDatumWriter
-import org.apache.kafka.clients.producer.ProducerRecord
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
-import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
 
@@ -32,7 +26,7 @@ class HttpRoutes(dao: UserReaderDao,
                  actorSystemWrapper: ActorSystemWrapper,
                  streamingComponents: StreamingComponents
                 )
-  extends Health {
+  extends Health with PerstistanceHelper {
   implicit val system: ActorSystem = actorSystemWrapper.system
   implicit val executor: ExecutionContextExecutor = system.dispatcher
   implicit val materializer: Materializer = actorSystemWrapper.materializer
@@ -48,10 +42,25 @@ class HttpRoutes(dao: UserReaderDao,
             val initialRequestReceived = Instant.now().toEpochMilli
             log.debug(s"Looking for className '${classNameOption.getOrElse("NONE")}' & tttId '${timeToTeachUserIdOption.getOrElse("NONE")}'")
 
-            failWith(new NotImplementedException())
+            // TODO: fetch the classtimetable
+            val futureMaybeClassTimetable : Future[Option[ClassTimetable]] = searchForTimeTable(classNameOption, timeToTeachUserIdOption)
+            processClassTimetableFuture(futureMaybeClassTimetable)
           }
       }
     } ~ health
 
-
+  private def processClassTimetableFuture(futureMaybeClassTimetable: Future[Option[ClassTimetable]]) = {
+    onComplete(futureMaybeClassTimetable) {
+      case Success(maybeClassTimetable) =>
+        if (maybeClassTimetable.isDefined) {
+          val classTimetable = maybeClassTimetable.get
+          val writer = new ClassTimetableSerializer
+          val classTimetableBytes = writer.serialize("ignore", classTimetable)
+          complete(HttpEntity(ContentTypes.`application/octet-stream`, classTimetableBytes))
+        } else {
+          reject
+        }
+      case Failure(ex) => failWith(ex)
+    }
+  }
 }

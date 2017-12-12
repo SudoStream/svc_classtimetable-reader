@@ -8,6 +8,7 @@ import akka.event.LoggingAdapter
 import akka.stream.Materializer
 import com.mongodb.connection.ClusterSettings
 import com.typesafe.config.ConfigFactory
+import io.sudostream.classtimetablereader.Main
 import io.sudostream.classtimetablereader.config.ActorSystemWrapper
 import org.mongodb.scala.connection.{NettyStreamFactoryFactory, SslSettings}
 import org.mongodb.scala.{Document, MongoClient, MongoClientSettings, MongoCollection, MongoDatabase, ServerAddress}
@@ -26,7 +27,7 @@ sealed class MongoDbConnectionWrapperImpl(actorSystemWrapper: ActorSystemWrapper
   private val mongoDbUriString = config.getString("mongodb.connection_uri")
   private val mongoDbUri = new URI(mongoDbUriString)
   private val classTimetableDatabaseName = config.getString("classtimetable-reader-service.database_name")
-  private val classTimetableCollectionName = config.getString("classtimetable-reader-service.users_collection")
+  private val classTimetableCollectionName = config.getString("classtimetable-reader-service.classtimetables_collection")
 
   private val isLocalMongoDb: Boolean = try {
     if (sys.env("LOCAL_MONGO_DB") == "true") true else false
@@ -38,7 +39,7 @@ sealed class MongoDbConnectionWrapperImpl(actorSystemWrapper: ActorSystemWrapper
 
   def getClassTimetableCollection: MongoCollection[Document] = {
     def createMongoClient: MongoClient = {
-      if (isLocalMongoDb) {
+      if (isLocalMongoDb || Main.isMinikubeRun) {
         buildLocalMongoDbClient
       } else {
         log.info(s"connecting to mongo db at '${mongoDbUri.getHost}:${mongoDbUri.getPort}'")
