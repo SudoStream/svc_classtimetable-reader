@@ -1,7 +1,7 @@
 package io.sudostream.classtimetablereader.dao
 
-import io.sudostream.classtimetablereader.model.{ClassName, TimeToTeachId}
-import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.ClassTimetable
+import io.sudostream.classtimetablereader.model.ClassName
+import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.{ClassTimetable, TimeToTeachId}
 
 import scala.concurrent.Future
 

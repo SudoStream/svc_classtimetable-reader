@@ -12,9 +12,9 @@ import akka.util.Timeout
 import io.sudostream.classtimetablereader.api.kafka.StreamingComponents
 import io.sudostream.classtimetablereader.config.ActorSystemWrapper
 import io.sudostream.classtimetablereader.dao.{ClassTimetableDao, MongoClassTimetableBsonToModelTranslator}
-import io.sudostream.classtimetablereader.model.{ClassName, TimeToTeachId}
+import io.sudostream.classtimetablereader.model.ClassName
 import io.sudostream.timetoteach.kafka.serializing.systemwide.classtimetable.ClassTimetableSerializer
-import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.ClassTimetable
+import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.{ClassTimetable, TimeToTeachId}
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContextExecutor, Future}
