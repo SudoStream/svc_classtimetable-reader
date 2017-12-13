@@ -130,7 +130,57 @@ class MongoClassTimetableBsonToModelTranslator() {
     EndTime(timeIso8601.getValue)
   }
 
-  private[dao] def extractSubjects(array: BsonArray): List[SubjectDetailWrapper] = {
-    Nil
+  private[dao] def extractSubjectName(subjectBson: BsonString): SubjectName = {
+    subjectBson.getValue.toUpperCase.trim match {
+      case "ART" => SubjectName.ART
+      case "ASSEMBLY" => SubjectName.ASSEMBLY
+      case "EMPTY" => SubjectName.EMPTY
+      case "DRAMA" => SubjectName.DRAMA
+      case "GOLDEN_TIME" => SubjectName.GOLDEN_TIME
+      case "HEALTH" => SubjectName.HEALTH
+      case "ICT" => SubjectName.ICT
+      case "MATHS" => SubjectName.MATHS
+      case "MUSIC" => SubjectName.MUSIC
+      case "NUMERACY" => SubjectName.NUMERACY
+      case "OTHER" => SubjectName.OTHER
+      case "READING" => SubjectName.READING
+      case "PHYSICAL_EDUCATION" => SubjectName.PHYSICAL_EDUCATION
+      case "RME" => SubjectName.RME
+      case "SOFT_START" => SubjectName.SOFT_START
+      case "SPELLING" => SubjectName.SPELLING
+      case "TEACHER_COVERTIME" => SubjectName.TEACHER_COVERTIME
+      case "TOPIC" => SubjectName.TOPIC
+      case "WRITING" => SubjectName.WRITING
+      case "PLAY" => SubjectName.PLAY
+      case "MODERN_LANGUAGES" => SubjectName.MODERN_LANGUAGES
+      case "SCIENCE" => SubjectName.SCIENCE
+      case "HAND_WRITING" => SubjectName.HAND_WRITING
+      case "GEOGRAPHY" => SubjectName.GEOGRAPHY
+      case "HISTORY" => SubjectName.HISTORY
+      case otherSubjectValue => throw new RuntimeException(s"Did not recognise subject '$otherSubjectValue'")
+    }
+  }
+
+  private[dao] def extractAdditionalInfo(additionalInfo: BsonString): SubjectDetailAdditionalInfo = {
+    SubjectDetailAdditionalInfo(additionalInfo.getValue)
+  }
+
+  private[dao] def extractSubjects(subjectsArray: BsonArray): List[SubjectDetailWrapper] = {
+    import scala.collection.JavaConversions._
+    {
+      for {
+        subjectDetailValue <- subjectsArray
+        subjectDetailDoc = subjectDetailValue.asInstanceOf[BsonDocument]
+        subjectName = extractSubjectName(subjectDetailDoc.getString(ClassTimetableMongoDbSchema.SUBJECT_DETAIL_NAME))
+        startTime = extractStartTime(subjectDetailDoc.getString(ClassTimetableMongoDbSchema.SUBJECT_DETAIL_START_TIME))
+        endTime = extractEndTime(subjectDetailDoc.getString(ClassTimetableMongoDbSchema.SUBJECT_DETAIL_END_TIME))
+        additionalInfo = extractAdditionalInfo(subjectDetailDoc.getString(ClassTimetableMongoDbSchema.SUBJECT_DETAIL_ADDITIONAL_INFO))
+      } yield SubjectDetailWrapper(SubjectDetail(
+        subjectName,
+        startTime,
+        endTime,
+        additionalInfo
+      ))
+    }.toList
   }
 }

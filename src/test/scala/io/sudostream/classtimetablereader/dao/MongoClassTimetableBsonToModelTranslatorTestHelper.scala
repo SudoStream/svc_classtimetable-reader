@@ -291,4 +291,20 @@ trait MongoClassTimetableBsonToModelTranslatorTestHelper {
     )
   }
 
+  def createSomeSubjects() : BsonArray = {
+    BsonArray(
+      BsonDocument(
+        "subjectName" -> "GEOGRAPHY",
+        "startTime" -> "13:00",
+        "endTime" -> "13:40",
+        "additionalInfo" -> ""
+      ),
+      BsonDocument(
+        "subjectName" -> "SPELLING",
+        "startTime" -> "13:40",
+        "endTime" -> "15:00",
+        "additionalInfo" -> ""
+      )
+    )
+  }
 }
