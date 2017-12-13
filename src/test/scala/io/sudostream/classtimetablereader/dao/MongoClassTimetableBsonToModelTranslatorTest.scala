@@ -1,8 +1,11 @@
 package io.sudostream.classtimetablereader.dao
 
+import java.time.format.DateTimeParseException
+
 import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.TimeToTeachId
 import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.sessions.SessionBoundaryType
-import org.mongodb.scala.bson.{BsonDocument, BsonString}
+import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.time.DayOfTheWeek
+import org.mongodb.scala.bson.{BsonArray, BsonDocument, BsonString}
 import org.scalatest.FunSuite
 
 class MongoClassTimetableBsonToModelTranslatorTest extends FunSuite with MongoClassTimetableBsonToModelTranslatorTestHelper {
@@ -60,5 +63,91 @@ class MongoClassTimetableBsonToModelTranslatorTest extends FunSuite with MongoCl
     assert(maybeSessionName.get.value === "This Is A Session")
   }
 
+  test("Calling createSchoolTimesFromDoc with empty array returns an empty ClassTimetableSchoolTimes") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    val classTimeTableSchoolTimes = translator.createSchoolTimesFromDoc(new BsonArray())
+    assert(classTimeTableSchoolTimes.schoolSessionBoundaries.isEmpty)
+  }
+
+  test("Calling createSchoolTimesFromDoc with valid array returns an non empty ClassTimetableSchoolTimes") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    val classTimeTableSchoolTimes = translator.createSchoolTimesFromDoc(createSchoolTimesArray())
+    assert(classTimeTableSchoolTimes.schoolSessionBoundaries.nonEmpty)
+  }
+
+  test("Calling createAllSessionsOfTheWeek with empty array returns an empty SessionOfTheDayWrapper List") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    val sessionOfTheDayWrappers = translator.createAllSessionsOfTheWeek(new BsonArray())
+    assert(sessionOfTheDayWrappers.isEmpty)
+  }
+
+  test("Calling createAllSessionsOfTheWeek with valid array returns a non empty SessionOfTheDayWrapper List") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    val sessionOfTheDayWrappers = translator.createAllSessionsOfTheWeek(createAllSessionsOfTheWeekArray())
+    assert(sessionOfTheDayWrappers.nonEmpty)
+  }
+
+  test("Calling extractDayOfTheWeek with invalid 'rubbish' throws MatchError ") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    assertThrows[MatchError] {
+      val dayOfTheWeek = translator.extractDayOfTheWeek(BsonString("rubbish"))
+    }
+  }
+
+  test("Calling extractDayOfTheWeek with 'MONDAY' returns DayOfTheWeek.MONDAY ") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    val dayOfTheWeek = translator.extractDayOfTheWeek(BsonString("MONDAY"))
+    assert(dayOfTheWeek === DayOfTheWeek.MONDAY)
+  }
+
+  test("Calling extractDayOfTheWeek with 'TUESDAY' returns DayOfTheWeek.TUESDAY ") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    val dayOfTheWeek = translator.extractDayOfTheWeek(BsonString("TUESDAY"))
+    assert(dayOfTheWeek === DayOfTheWeek.TUESDAY)
+  }
+
+  test("Calling extractDayOfTheWeek with 'WEDNESDAY' returns DayOfTheWeek.WEDNESDAY ") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    val dayOfTheWeek = translator.extractDayOfTheWeek(BsonString("WEDNESDAY"))
+    assert(dayOfTheWeek === DayOfTheWeek.WEDNESDAY)
+  }
+
+  test("Calling extractDayOfTheWeek with 'THURSDAY' returns DayOfTheWeek.THURSDAY ") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    val dayOfTheWeek = translator.extractDayOfTheWeek(BsonString("THURSDAY"))
+    assert(dayOfTheWeek === DayOfTheWeek.THURSDAY)
+  }
+
+  test("Calling extractDayOfTheWeek with 'FRIDAY' returns DayOfTheWeek.FRIDAY ") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    val dayOfTheWeek = translator.extractDayOfTheWeek(BsonString("FRIDAY"))
+    assert(dayOfTheWeek === DayOfTheWeek.FRIDAY)
+  }
+
+  test("Calling extractStartTime with 'nonsense' throws DateTimeParseException") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    assertThrows[DateTimeParseException] {
+      translator.extractStartTime(BsonString("nonsense"))
+    }
+  }
+
+  test("Calling extractStartTime with '09:03' returns StartTime of the same value") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    val startTime = translator.extractStartTime(BsonString("09:03"))
+    assert(startTime.timeIso8601 === "09:03")
+  }
+
+  test("Calling extractEndTime with 'nonsense' throws DateTimeParseException") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    assertThrows[DateTimeParseException] {
+      translator.extractEndTime(BsonString("nonsense"))
+    }
+  }
+
+  test("Calling extractEndTime with '15:57' returns EndTime of the same value") {
+    val translator = new MongoClassTimetableBsonToModelTranslator()
+    val endTime = translator.extractEndTime(BsonString("15:57"))
+    assert(endTime.timeIso8601 === "15:57")
+  }
 
 }

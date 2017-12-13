@@ -1,8 +1,11 @@
 package io.sudostream.classtimetablereader.dao
 
+import java.time.LocalTime
+
 import io.sudostream.classtimetablereader.dao.mongo.ClassTimetableMongoDbSchema
 import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.sessions._
-import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.time.{ClassTimetableSchoolTimes, StartTime}
+import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.subjectdetail.{SubjectDetail, SubjectDetailAdditionalInfo, SubjectDetailWrapper, SubjectName}
+import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.time.{ClassTimetableSchoolTimes, DayOfTheWeek, EndTime, StartTime}
 import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.{ClassName, ClassTimetable, TimeToTeachId}
 import org.mongodb.scala.bson.{BsonArray, BsonDocument, BsonString}
 
@@ -86,6 +89,48 @@ class MongoClassTimetableBsonToModelTranslator() {
   }
 
   private[dao] def createAllSessionsOfTheWeek(allSessionsAsArray: BsonArray): scala.List[SessionOfTheDayWrapper] = {
+    import scala.collection.JavaConversions._
+
+    {
+      for {
+        sessionOfTheWeekValue <- allSessionsAsArray
+        sessionOfTheWeekDoc = sessionOfTheWeekValue.asInstanceOf[BsonDocument]
+        sessionName = sessionOfTheWeekDoc.getString(ClassTimetableMongoDbSchema.SESSIONS_WEEK_SESSION_NAME)
+        dayOfTheWeek = extractDayOfTheWeek(sessionOfTheWeekDoc.getString(ClassTimetableMongoDbSchema.SESSIONS_WEEK_DAY_OF_THE_WEEK))
+        startTime = extractStartTime(sessionOfTheWeekDoc.getString(ClassTimetableMongoDbSchema.SESSIONS_WEEK_START_TIME))
+        endTime = extractEndTime(sessionOfTheWeekDoc.getString(ClassTimetableMongoDbSchema.SESSIONS_WEEK_END_TIME))
+        subjects = extractSubjects(sessionOfTheWeekDoc.getArray(ClassTimetableMongoDbSchema.SESSIONS_WEEK_SUBJECTS))
+      } yield SessionOfTheDayWrapper(SessionOfTheDay(
+        SessionName(sessionName.getValue),
+        dayOfTheWeek,
+        startTime,
+        endTime,
+        subjects
+      ))
+    }.toList
+  }
+
+  private[dao] def extractDayOfTheWeek(dayOfTheWeek: BsonString): DayOfTheWeek = {
+    dayOfTheWeek.getValue.toUpperCase.trim match {
+      case "MONDAY" => DayOfTheWeek.MONDAY
+      case "TUESDAY" => DayOfTheWeek.TUESDAY
+      case "WEDNESDAY" => DayOfTheWeek.WEDNESDAY
+      case "THURSDAY" => DayOfTheWeek.THURSDAY
+      case "FRIDAY" => DayOfTheWeek.FRIDAY
+    }
+  }
+
+  private[dao] def extractStartTime(timeIso8601: BsonString): StartTime = {
+    LocalTime.parse(timeIso8601.getValue)
+    StartTime(timeIso8601.getValue)
+  }
+
+  private[dao] def extractEndTime(timeIso8601: BsonString): EndTime = {
+    LocalTime.parse(timeIso8601.getValue)
+    EndTime(timeIso8601.getValue)
+  }
+
+  private[dao] def extractSubjects(array: BsonArray): List[SubjectDetailWrapper] = {
     Nil
   }
 }
