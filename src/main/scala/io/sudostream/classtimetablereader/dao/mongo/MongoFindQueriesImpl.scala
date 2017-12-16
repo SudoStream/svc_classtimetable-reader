@@ -11,6 +11,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object MongoFindQueriesImpl {
+
   private[dao] def extractLatestClassTimetable(classTimetableHistory: Seq[BsonDocument]): Option[BsonDocument] = {
     if (classTimetableHistory.isEmpty) None
     else {
@@ -42,24 +43,33 @@ class MongoFindQueriesImpl(mongoDbConnectionWrapper: MongoDbConnectionWrapper) e
   override def findClassTimetable(className: ClassName, timeToTeachId: TimeToTeachId): Future[Option[BsonDocument]] = {
     import scala.collection.JavaConversions._
 
+    println(s"findClassTimetable() - ClassName: ${className.value}, TimeToTeachId : ${timeToTeachId.value}")
+
     val findMatcher = Document("_id" -> timeToTeachId.value)
+    println(s"findClassTimetable() - findMatcher : ${findMatcher.toString()}")
     val classTimetablesMongoDocuments: FindObservable[Document] = classTimetableCollection.find(findMatcher)
     val futureClassTimetablesMongoDocuments = classTimetablesMongoDocuments.toFuture
 
     futureClassTimetablesMongoDocuments.map {
       classTimetablesMongoDocuments =>
-        if (classTimetablesMongoDocuments.size != 1) None
-        else {
+        if (classTimetablesMongoDocuments.size != 1) {
+          println("findClassTimetable()  Oh dear ... didn't find what we were looking for")
+          None
+        } else {
+          println("findClassTimetable()  We did fine something :-)")
           val classTimetablesMongoDocumentsList = classTimetablesMongoDocuments.toList
+          println(s"findClassTimetable() - classTimetablesMongoDocumentsList : ${classTimetablesMongoDocumentsList.toString()}")
           val classTimetableValuesHistory = {
             for {
               classTimetableDoc <- classTimetablesMongoDocumentsList
-              maybeAllClassTimetables = classTimetableDoc.get[BsonArray]("classTimetables")
+              maybeAllClassTimetables = classTimetableDoc.get[BsonArray](ClassTimetableMongoDbSchema.ALL_USER_CLASS_TIMETABLES)
               allClassTimetables <- maybeAllClassTimetables
               classTimetableValues = allClassTimetables.getValues
 
             } yield classTimetableValues
           }.flatten
+
+          println(s"findClassTimetable() - classTimetableValuesHistory : ${classTimetableValuesHistory.toString()}")
 
           val classTimetableHistory = for {
             classTimetableValue: BsonValue <- classTimetableValuesHistory
@@ -68,7 +78,11 @@ class MongoFindQueriesImpl(mongoDbConnectionWrapper: MongoDbConnectionWrapper) e
             if theClassName == className.value
           } yield classTimetableDoc
 
-          MongoFindQueriesImpl.extractLatestClassTimetable(classTimetableHistory)
+          println(s"findClassTimetable() - classTimetableHistory : ${classTimetableHistory.toString()}")
+
+          val maybeClassTimetable = MongoFindQueriesImpl.extractLatestClassTimetable(classTimetableHistory)
+          println(s"findClassTimetable() - maybeClassTimetable : ${maybeClassTimetable.toString}")
+          maybeClassTimetable
         }
     }
   }

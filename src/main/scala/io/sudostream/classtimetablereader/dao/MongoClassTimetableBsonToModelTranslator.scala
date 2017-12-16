@@ -22,34 +22,23 @@ class MongoClassTimetableBsonToModelTranslator() {
 
   private[dao] def translateBsonToMaybeClassTimetable(timeToTeachId: TimeToTeachId,
                                                       classTimetableBson: BsonDocument): Option[ClassTimetable] = {
-    import scala.collection.JavaConversions._
+
+    println(s"translateBsonToMaybeClassTimetable() - classTimetableBson : ${classTimetableBson.toString} ")
 
     if (classTimetableBson.isEmpty) None
     else {
-      val allTheUserClassTimetablesBsonArray = classTimetableBson.getArray(ClassTimetableMongoDbSchema.ALL_USER_CLASS_TIMETABLES)
-      val allTheUserClassTimetables = {
-        for {
-          specificClassTimetableHistoryAsBsonValue <- allTheUserClassTimetablesBsonArray
-          specificClassTimetableHistoryAsBsonDoc = specificClassTimetableHistoryAsBsonValue.asInstanceOf[BsonDocument]
-          epochMillisUTC = specificClassTimetableHistoryAsBsonDoc.getNumber(ClassTimetableMongoDbSchema.EPOCH_MILLI_UTC)
-          className = specificClassTimetableHistoryAsBsonDoc.getString(ClassTimetableMongoDbSchema.CLASS_NAME)
-          classTimetablesForSpecificClassAsDoc = specificClassTimetableHistoryAsBsonDoc.getDocument(
-            ClassTimetableMongoDbSchema.CLASS_TIMETABLES_FOR_SPECIFIC_CLASS)
-          schoolTimes = createSchoolTimesFromDoc(classTimetablesForSpecificClassAsDoc.getArray(ClassTimetableMongoDbSchema.SCHOOL_TIMES))
-          allSessionsOfTheWeek = createAllSessionsOfTheWeek(classTimetablesForSpecificClassAsDoc.getArray(ClassTimetableMongoDbSchema.ALL_SESSIONS_OF_THE_WEEK))
-        } yield ClassTimetable(
-          timeToTeachId,
-          ClassName(className.getValue),
-          schoolTimes,
-          allSessionsOfTheWeek
-        )
-      }.toList
-
-      if (allTheUserClassTimetables.size != 1) {
-        None
-      } else {
-        Some(allTheUserClassTimetables.head)
-      }
+      val epochMillisUTC = classTimetableBson.getNumber(ClassTimetableMongoDbSchema.EPOCH_MILLI_UTC)
+      val className = classTimetableBson.getString(ClassTimetableMongoDbSchema.CLASS_NAME)
+      val classTimetablesForSpecificClassAsDoc = classTimetableBson.getDocument(
+        ClassTimetableMongoDbSchema.CLASS_TIMETABLES_FOR_SPECIFIC_CLASS)
+      val schoolTimes = createSchoolTimesFromDoc(classTimetablesForSpecificClassAsDoc.getArray(ClassTimetableMongoDbSchema.SCHOOL_TIMES))
+      val allSessionsOfTheWeek = createAllSessionsOfTheWeek(classTimetablesForSpecificClassAsDoc.getArray(ClassTimetableMongoDbSchema.ALL_SESSIONS_OF_THE_WEEK))
+      Some(ClassTimetable(
+        timeToTeachId,
+        ClassName(className.getValue),
+        schoolTimes,
+        allSessionsOfTheWeek
+      ))
     }
   }
 
