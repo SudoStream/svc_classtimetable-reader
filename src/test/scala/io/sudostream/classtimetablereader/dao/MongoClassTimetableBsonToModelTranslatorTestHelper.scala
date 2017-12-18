@@ -6,16 +6,11 @@ trait MongoClassTimetableBsonToModelTranslatorTestHelper {
 
   def createValidClassTimetableBson(): BsonDocument = {
     BsonDocument(
-      "_id" -> BsonString("user12345"),
-      "allUserClassTimetables" -> BsonArray(
-        BsonDocument(
-          "epochMillisUTC" -> BsonNumber(1513093735330L),
-          "className" -> BsonString("P3AB"),
-          "classTimetablesForSpecificClass" -> BsonDocument(
-            "schoolTimes" -> createSchoolTimesArray(),
-            "allSessionsOfTheWeek" -> createAllSessionsOfTheWeekArray()
-          )
-        )
+      "epochMillisUTC" -> BsonNumber(1513093735330L),
+      "className" -> BsonString("P3AB"),
+      "classTimetablesForSpecificClass" -> BsonDocument(
+        "schoolTimes" -> createSchoolTimesArray(),
+        "allSessionsOfTheWeek" -> createAllSessionsOfTheWeekArray()
       )
     )
   }
@@ -291,7 +286,7 @@ trait MongoClassTimetableBsonToModelTranslatorTestHelper {
     )
   }
 
-  def createSomeSubjects() : BsonArray = {
+  def createSomeSubjects(): BsonArray = {
     BsonArray(
       BsonDocument(
         "subjectName" -> "GEOGRAPHY",
