@@ -25,6 +25,7 @@ object Main extends App with MiniKubeHelper {
   lazy val actorSystemWrapper: ActorSystemWrapper = wire[ActorSystemWrapper]
   lazy val mongoFindQueries: MongoFindQueriesProxy = wire[MongoFindQueriesImpl]
   lazy val classTimetableDaoTranslator = wire[MongoClassTimetableBsonToModelTranslator]
+  lazy val classDetailsDaoTranslator = wire[MongoClassDetailsBsonToModelTranslator]
 
   implicit val theActorSystem: ActorSystem = actorSystemWrapper.system
   val logger = Logging(theActorSystem, getClass)

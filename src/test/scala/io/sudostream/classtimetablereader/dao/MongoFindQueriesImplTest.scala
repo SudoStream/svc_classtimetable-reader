@@ -22,6 +22,9 @@ class MongoFindQueriesImplTest extends FunSuite {
     assert(maybeLatestClassTimetableDoc.isEmpty)
   }
 
+//  test("Should find a list of 3 documents when look for classes associated with teacher id user_147ade86-39d7-46df-8ea1-012ddc344f5a") {
+//    val maybeLatestClassTimetableDoc = MongoFindQueriesImpl.(Nil)
+//  }
 
   /// Test Helpers
   def createSomeClassTimetableDocuments(): Seq[BsonDocument] = {
@@ -157,6 +160,92 @@ class MongoFindQueriesImplTest extends FunSuite {
           )
         )
       ) :: Nil
+  }
+
+
+  def createSomeClassDetails(): Seq[BsonDocument] = {
+    BsonDocument(
+      "_id" -> "classId_f4eca698-f6d4-42ad-b5cb-c269a2137f70",
+      "epochMillisUTC" -> BsonNumber(1516295087351L),
+      "className" -> "My New Class 1",
+      "classGroups" -> BsonArray(
+        BsonDocument(
+          "groupId" -> "groupId_513ca5d4-d1c1-4e7f-a9af-025fe1eb68d3",
+          "groupName" -> "triangles",
+          "groupType" -> "MATHS",
+          "groupLevel" -> "EARLY"
+        ),
+        BsonDocument(
+          "groupId" -> "groupId_c2322b92-88bb-46c7-8a88-e8c11656e78a",
+          "groupName" -> "squares",
+          "groupType" -> "MATHS",
+          "groupLevel" -> "FIRST"
+        ),
+        BsonDocument(
+          "groupId" -> "groupId_01d9e731-cc30-405f-b090-263ec9ecafe3",
+          "groupName" -> "circles",
+          "groupType" -> "MATHS",
+          "groupLevel" -> "FIRST"
+        )
+      ),
+      "teachersWithWriteAccess" -> BsonArray(
+        "user_147ade86-39d7-46df-8ea1-012ddc344f5a"
+      )
+    ) :: BsonDocument(
+      "_id" -> "classId_f4eca698-f6d4-42ad-b5cb-c269a2137f71",
+      "epochMillisUTC" -> BsonNumber(1516295088358L),
+      "className" -> "My New Class 2",
+      "classGroups" -> BsonArray(
+        BsonDocument(
+          "groupId" -> "groupId_513ca5d4-d1c1-4e7f-a9af-025fe1eb68a1",
+          "groupName" -> "shakeys",
+          "groupType" -> "LITERACY",
+          "groupLevel" -> "EARLY"
+        ),
+        BsonDocument(
+          "groupId" -> "groupId_c2322b92-88bb-46c7-8a88-e8c11656e7b1",
+          "groupName" -> "clarks",
+          "groupType" -> "LITERACY",
+          "groupLevel" -> "FIRST"
+        ),
+        BsonDocument(
+          "groupId" -> "groupId_01d9e731-cc30-405f-b090-263ec9ecafc1",
+          "groupName" -> "yeates",
+          "groupType" -> "LITERACY",
+          "groupLevel" -> "FIRST"
+        )
+      ),
+      "teachersWithWriteAccess" -> BsonArray(
+        "user_147ade86-39d7-46df-8ea1-012ddc344f5a"
+      )
+    ) :: BsonDocument(
+      "_id" -> "classId_f4eca698-f6d4-42ad-b5cb-c269a2137f72",
+      "epochMillisUTC" -> BsonNumber(1516295089359L),
+      "className" -> "My New Class 3",
+      "classGroups" -> BsonArray(
+        BsonDocument(
+          "groupId" -> "groupId_513ca5d4-d1c1-4e7f-a9af-025fe1eb68t1",
+          "groupName" -> "blues",
+          "groupType" -> "MATHS",
+          "groupLevel" -> "EARLY"
+        ),
+        BsonDocument(
+          "groupId" -> "groupId_c2322b92-88bb-46c7-8a88-e8c11656e78u1",
+          "groupName" -> "reds",
+          "groupType" -> "MATHS",
+          "groupLevel" -> "FIRST"
+        ),
+        BsonDocument(
+          "groupId" -> "groupId_01d9e731-cc30-405f-b090-263ec9ecafi1",
+          "groupName" -> "yellows",
+          "groupType" -> "MATHS",
+          "groupLevel" -> "FIRST"
+        )
+      ),
+      "teachersWithWriteAccess" -> BsonArray(
+        "user_147ade86-39d7-46df-8ea1-012ddc344f5a"
+      )
+    ) :: Nil
   }
 
 }

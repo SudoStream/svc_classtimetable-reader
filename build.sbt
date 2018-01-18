@@ -9,7 +9,7 @@ enablePlugins(DockerPlugin)
 name := "classtimetable-reader"
 organization := "io.sudostream"
 scalaVersion := "2.11.8"
-version := "0.0.1-16"
+version := "0.0.1-17"
 
 dockerBaseImage := "anapsix/alpine-java:8_server-jre"
 dockerRepository := Some("eu.gcr.io/time-to-teach-zone")
@@ -30,7 +30,7 @@ libraryDependencies ++= {
   val akkaV = "2.5.4"
   val akkaHttpVersion = "10.0.10"
   Seq(
-    "io.sudostream.timetoteach" %% "messages" % "0.0.11-36",
+    "io.sudostream.timetoteach" %% "messages" % "0.0.11-42",
     "com.typesafe.akka" %% "akka-actor" % akkaV,
     "com.typesafe.akka" %% "akka-stream" % akkaV,
     "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,

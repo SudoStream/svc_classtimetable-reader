@@ -86,4 +86,23 @@ class MongoFindQueriesImpl(mongoDbConnectionWrapper: MongoDbConnectionWrapper) e
         }
     }
   }
+
+
+  ///////////////////////////////////
+
+  val classesCollection: MongoCollection[Document] = mongoDbConnectionWrapper.getClassesCollection
+
+  override def findTeachersClasses(timeToTeachId: TimeToTeachId): Future[List[Document]] = {
+    println(s"findTeachersClasses() - TimeToTeachId : ${timeToTeachId.value}")
+
+    val findMatcher = Document("teachersWithWriteAccess" -> timeToTeachId.value)
+    println(s"findTeachersClasses() - findMatcher : ${findMatcher.toString()}")
+    val classDetailsMongoDocuments: FindObservable[Document] = classesCollection.find(findMatcher)
+    val futureClassDetailsMongoDocuments = classDetailsMongoDocuments.toFuture
+
+    futureClassDetailsMongoDocuments.map {
+      classDetailsMongoDocuments =>
+        classDetailsMongoDocuments.toList
+    }
+  }
 }
