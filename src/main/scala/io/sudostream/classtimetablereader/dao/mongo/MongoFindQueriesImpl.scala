@@ -3,7 +3,7 @@ package io.sudostream.classtimetablereader.dao.mongo
 import io.sudostream.classtimetablereader.model.ClassName
 import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.TimeToTeachId
 import org.bson.BsonValue
-import org.mongodb.scala.bson.{BsonArray, BsonDocument}
+import org.mongodb.scala.bson.{BsonArray, BsonDocument, BsonString}
 import org.mongodb.scala.{Document, FindObservable, MongoCollection}
 
 import scala.annotation.tailrec
@@ -95,7 +95,19 @@ class MongoFindQueriesImpl(mongoDbConnectionWrapper: MongoDbConnectionWrapper) e
   override def findTeachersClasses(timeToTeachId: TimeToTeachId): Future[List[Document]] = {
     println(s"findTeachersClasses() - TimeToTeachId : ${timeToTeachId.value}")
 
-    val findMatcher = Document("teachersWithWriteAccess" -> timeToTeachId.value)
+    val findMatcher = Document(
+      "$and" -> BsonArray(
+        Document("teachersWithWriteAccess" -> timeToTeachId.value),
+        Document("teachersWhoDeletedClass" ->
+          Document("$nin" ->
+            BsonArray(
+              timeToTeachId.value
+            )
+          )
+        )
+      )
+    )
+
     println(s"findTeachersClasses() - findMatcher : ${findMatcher.toString()}")
     val classDetailsMongoDocuments: FindObservable[Document] = classesCollection.find(findMatcher)
     val futureClassDetailsMongoDocuments = classDetailsMongoDocuments.toFuture
