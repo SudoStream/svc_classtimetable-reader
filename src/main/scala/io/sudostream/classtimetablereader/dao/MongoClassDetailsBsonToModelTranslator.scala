@@ -4,8 +4,8 @@ import io.sudostream.classtimetablereader.dao.mongo.ClassDetailsMongoDbSchema
 import io.sudostream.timetoteach.messages.scottish.ScottishCurriculumLevel
 import io.sudostream.timetoteach.messages.systemwide.model.classes._
 import org.bson.BsonString
-import org.mongodb.scala.Document
-import org.mongodb.scala.bson.BsonArray
+import org.mongodb.scala.{Document, bson}
+import org.mongodb.scala.bson.{BsonArray, BsonString}
 
 class MongoClassDetailsBsonToModelTranslator() {
 
@@ -23,6 +23,7 @@ class MongoClassDetailsBsonToModelTranslator() {
 
       groupId = classGroupAsDoc.getString(ClassDetailsMongoDbSchema.GROUP_ID).getValue
       groupName = classGroupAsDoc.getString(ClassDetailsMongoDbSchema.GROUP_NAME).getValue
+      groupDescription = classGroupAsDoc.getString(ClassDetailsMongoDbSchema.GROUP_DESCRIPTION).getValue
       groupType = classGroupAsDoc.getString(ClassDetailsMongoDbSchema.GROUP_TYPE).getValue match {
         case "MATHS" => GroupType.MATHS
         case "LITERACY" => GroupType.LITERACY
@@ -39,6 +40,7 @@ class MongoClassDetailsBsonToModelTranslator() {
     } yield ClassGroupsWrapper(ClassGroup(
       GroupId(groupId),
       GroupName(groupName),
+      groupDescription,
       groupType,
       groupLevel
     ))
@@ -54,6 +56,9 @@ class MongoClassDetailsBsonToModelTranslator() {
       maybeClassName = classDetailsDoc.get[BsonString](ClassDetailsMongoDbSchema.CLASS_NAME)
       className <- maybeClassName
 
+      maybeClassDescription: Option[BsonString] = classDetailsDoc.get[BsonString](ClassDetailsMongoDbSchema.CLASS_DESCRIPTION)
+      classDescription <- maybeClassDescription
+
       maybeTeachersWithWriteAccessArray = classDetailsDoc.get[BsonArray](ClassDetailsMongoDbSchema.TEACHERS_WITH_WRITE_ACCESS)
       teachersWithWriteAccessArray <- maybeTeachersWithWriteAccessArray
       teachersWithWriteAccessList = convertTeachersToList(teachersWithWriteAccessArray)
@@ -64,7 +69,7 @@ class MongoClassDetailsBsonToModelTranslator() {
 
 
     } yield ClassDetails(
-      ClassId(classId.getValue), ClassName(className.getValue), teachersWithWriteAccessList, classGroupsList
+      ClassId(classId.getValue), ClassName(className.getValue), teachersWithWriteAccessList, classDescription.getValue, classGroupsList
     )
   }
 }
