@@ -40,7 +40,7 @@ class MongoClassDetailsBsonToModelTranslator() {
     } yield ClassGroupsWrapper(ClassGroup(
       GroupId(groupId),
       GroupName(groupName),
-      groupDescription,
+      GroupDescription(groupDescription),
       groupType,
       groupLevel
     ))
@@ -52,6 +52,9 @@ class MongoClassDetailsBsonToModelTranslator() {
 
       maybeClassId = classDetailsDoc.get[BsonString](ClassDetailsMongoDbSchema.CLASS_ID)
       classId <- maybeClassId
+
+      maybeSchoolId = classDetailsDoc.get[BsonString](ClassDetailsMongoDbSchema.SCHOOL_ID)
+      schoolId <- maybeSchoolId
 
       maybeClassName = classDetailsDoc.get[BsonString](ClassDetailsMongoDbSchema.CLASS_NAME)
       className <- maybeClassName
@@ -69,7 +72,12 @@ class MongoClassDetailsBsonToModelTranslator() {
 
 
     } yield ClassDetails(
-      ClassId(classId.getValue), ClassName(className.getValue), teachersWithWriteAccessList, classDescription.getValue, classGroupsList
+      ClassId(classId.getValue),
+      SchoolId(schoolId.getValue),
+      ClassName(className.getValue),
+      ClassDescription(classDescription.getValue),
+      teachersWithWriteAccessList,
+      classGroupsList
     )
   }
 }

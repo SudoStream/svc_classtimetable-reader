@@ -2,6 +2,7 @@ package io.sudostream.classtimetablereader.dao.mongo
 
 object ClassDetailsMongoDbSchema {
   val CLASS_ID = "_id"
+  val SCHOOL_ID = "schoolId"
   val EPOCH_MILLI_UTC = "epochMillisUTC"
   val CLASS_NAME = "className"
   val CLASS_DESCRIPTION = "classDescription"
