@@ -30,7 +30,7 @@ class MongoFindQueriesImplTest extends FunSuite {
   def createSomeClassTimetableDocuments(): Seq[BsonDocument] = {
     BsonDocument(
       "epochMillisUTC" -> BsonNumber(10000000000L),
-      "className" -> "P3AB",
+      "classId" -> "P3AB",
       "classTimetables" -> BsonDocument(
         "schoolTimes" -> BsonArray(
           BsonDocument(
@@ -74,7 +74,7 @@ class MongoFindQueriesImplTest extends FunSuite {
     ) ::
       BsonDocument(
         "epochMillisUTC" -> BsonNumber(10000000004L),
-        "className" -> "P3AB",
+        "classId" -> "P3AB",
         "classTimetables" -> BsonDocument(
           "schoolTimes" -> BsonArray(
             BsonDocument(
@@ -118,7 +118,7 @@ class MongoFindQueriesImplTest extends FunSuite {
       ) ::
       BsonDocument(
         "epochMillisUTC" -> BsonNumber(10000000003L),
-        "className" -> "P3AB",
+        "classId" -> "P3AB",
         "classTimetables" -> BsonDocument(
           "schoolTimes" -> BsonArray(
             BsonDocument(
@@ -167,7 +167,7 @@ class MongoFindQueriesImplTest extends FunSuite {
     BsonDocument(
       "_id" -> "classId_f4eca698-f6d4-42ad-b5cb-c269a2137f70",
       "epochMillisUTC" -> BsonNumber(1516295087351L),
-      "className" -> "My New Class 1",
+      "classId" -> "My New Class 1",
       "classGroups" -> BsonArray(
         BsonDocument(
           "groupId" -> "groupId_513ca5d4-d1c1-4e7f-a9af-025fe1eb68d3",
@@ -194,7 +194,7 @@ class MongoFindQueriesImplTest extends FunSuite {
     ) :: BsonDocument(
       "_id" -> "classId_f4eca698-f6d4-42ad-b5cb-c269a2137f71",
       "epochMillisUTC" -> BsonNumber(1516295088358L),
-      "className" -> "My New Class 2",
+      "classId" -> "My New Class 2",
       "classGroups" -> BsonArray(
         BsonDocument(
           "groupId" -> "groupId_513ca5d4-d1c1-4e7f-a9af-025fe1eb68a1",
@@ -221,7 +221,7 @@ class MongoFindQueriesImplTest extends FunSuite {
     ) :: BsonDocument(
       "_id" -> "classId_f4eca698-f6d4-42ad-b5cb-c269a2137f72",
       "epochMillisUTC" -> BsonNumber(1516295089359L),
-      "className" -> "My New Class 3",
+      "classId" -> "My New Class 3",
       "classGroups" -> BsonArray(
         BsonDocument(
           "groupId" -> "groupId_513ca5d4-d1c1-4e7f-a9af-025fe1eb68t1",

@@ -6,7 +6,7 @@ import io.sudostream.classtimetablereader.dao.mongo.ClassTimetableMongoDbSchema
 import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.sessions._
 import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.subjectdetail.{SubjectDetail, SubjectDetailAdditionalInfo, SubjectDetailWrapper, SubjectName}
 import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.time.{ClassTimetableSchoolTimes, DayOfTheWeek, EndTime, StartTime}
-import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.{ClassName, ClassTimetable, TimeToTeachId}
+import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.{ClassId, ClassTimetable, TimeToTeachId}
 import org.mongodb.scala.bson.{BsonArray, BsonDocument, BsonString}
 
 class MongoClassTimetableBsonToModelTranslator() {
@@ -28,14 +28,14 @@ class MongoClassTimetableBsonToModelTranslator() {
     if (classTimetableBson.isEmpty) None
     else {
       val epochMillisUTC = classTimetableBson.getNumber(ClassTimetableMongoDbSchema.EPOCH_MILLI_UTC)
-      val className = classTimetableBson.getString(ClassTimetableMongoDbSchema.CLASS_NAME)
+      val classId = classTimetableBson.getString(ClassTimetableMongoDbSchema.CLASS_ID)
       val classTimetablesForSpecificClassAsDoc = classTimetableBson.getDocument(
         ClassTimetableMongoDbSchema.CLASS_TIMETABLES_FOR_SPECIFIC_CLASS)
       val schoolTimes = createSchoolTimesFromDoc(classTimetablesForSpecificClassAsDoc.getArray(ClassTimetableMongoDbSchema.SCHOOL_TIMES))
       val allSessionsOfTheWeek = createAllSessionsOfTheWeek(classTimetablesForSpecificClassAsDoc.getArray(ClassTimetableMongoDbSchema.ALL_SESSIONS_OF_THE_WEEK))
       Some(ClassTimetable(
         timeToTeachId,
-        ClassName(className.getValue),
+        ClassId(classId.getValue),
         schoolTimes,
         allSessionsOfTheWeek
       ))

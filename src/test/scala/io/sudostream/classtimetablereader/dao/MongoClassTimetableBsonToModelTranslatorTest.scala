@@ -42,11 +42,11 @@ class MongoClassTimetableBsonToModelTranslatorTest extends FunSuite with MongoCl
     assert(classTimeTable.schoolTimes.schoolSessionBoundaries.size === 6)
   }
 
-  test("Calling translateBsonToClassTimetable with valid Bson returns class name = 'P3AB'") {
+  test("Calling translateBsonToClassTimetable with valid Bson returns class id = 'P3AB'") {
     val translator = new MongoClassTimetableBsonToModelTranslator()
     val maybeClassTimetable = translator.translateBsonToMaybeClassTimetable(TimeToTeachId("user12345"), createValidClassTimetableBson())
     val classTimeTable = maybeClassTimetable.get
-    assert(classTimeTable.className.value === "P3AB")
+    assert(classTimeTable.classId.value === "P3AB")
   }
 
   test("Calling translateBsonToClassTimetable with valid Bson returns 15 sessions of the week") {

@@ -5,7 +5,7 @@ import akka.event.LoggingAdapter
 import akka.stream.Materializer
 import io.sudostream.classtimetablereader.config.ActorSystemWrapper
 import io.sudostream.classtimetablereader.dao.{ClassTimetableDao, MongoClassDetailsBsonToModelTranslator, MongoClassTimetableBsonToModelTranslator}
-import io.sudostream.classtimetablereader.model.ClassName
+import io.sudostream.classtimetablereader.model.ClassId
 import io.sudostream.timetoteach.messages.systemwide.model.classes.ClassDetails
 import io.sudostream.timetoteach.messages.systemwide.model.classtimetable.{ClassTimetable, TimeToTeachId}
 
@@ -22,8 +22,8 @@ sealed class MongoDbClassTimetableDao(mongoFindQueriesProxy: MongoFindQueriesPro
   implicit val materializer: Materializer = actorSystemWrapper.materializer
   val log: LoggingAdapter = system.log
 
-  override def findClassTimetable(className: ClassName, timeToTeachId: TimeToTeachId): Future[Option[ClassTimetable]] = {
-    val eventualMaybeTimetableBson = mongoFindQueriesProxy.findClassTimetable(className, timeToTeachId)
+  override def findClassTimetable(classId: ClassId, timeToTeachId: TimeToTeachId): Future[Option[ClassTimetable]] = {
+    val eventualMaybeTimetableBson = mongoFindQueriesProxy.findClassTimetable(classId, timeToTeachId)
     for {
       maybeTimetableBson <- eventualMaybeTimetableBson
       maybeClassTimetable = timetableTranslator.translateMaybeBsonToMaybeClassTimetable(timeToTeachId, maybeTimetableBson)

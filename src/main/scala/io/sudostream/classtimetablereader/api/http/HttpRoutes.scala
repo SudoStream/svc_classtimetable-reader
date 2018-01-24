@@ -12,7 +12,7 @@ import akka.util.Timeout
 import io.sudostream.classtimetablereader.api.kafka.StreamingComponents
 import io.sudostream.classtimetablereader.config.ActorSystemWrapper
 import io.sudostream.classtimetablereader.dao.{ClassTimetableDao, MongoClassTimetableBsonToModelTranslator}
-import io.sudostream.classtimetablereader.model.ClassName
+import io.sudostream.classtimetablereader.model.ClassId
 import io.sudostream.timetoteach.kafka.serializing.systemwide.classes.ClassDetailsCollectionSerializer
 import io.sudostream.timetoteach.kafka.serializing.systemwide.classtimetable.ClassTimetableSerializer
 import io.sudostream.timetoteach.messages.systemwide.model.SingleClassDetailsWrapper
@@ -39,15 +39,15 @@ class HttpRoutes(
 
   val routes: Route =
     path("api" / "classtimetables") {
-      parameters('className.?, 'timeToTeachUserId.?) {
-        (classNameOption, timeToTeachUserIdOption) =>
+      parameters('classId.?, 'timeToTeachUserId.?) {
+        (classIdOption, timeToTeachUserIdOption) =>
           get {
             val initialRequestReceived = Instant.now().toEpochMilli
-            log.debug(s"Looking for className '${classNameOption.getOrElse("NONE")}' & tttId '${timeToTeachUserIdOption.getOrElse("NONE")}'")
+            log.debug(s"Looking for classId '${classIdOption.getOrElse("NONE")}' & tttId '${timeToTeachUserIdOption.getOrElse("NONE")}'")
 
-            val className = ClassName(classNameOption.getOrElse(""))
+            val classId = ClassId(classIdOption.getOrElse(""))
             val tttUserId = TimeToTeachId(timeToTeachUserIdOption.getOrElse(""))
-            val futureMaybeClassTimetable: Future[Option[ClassTimetable]] = classTimetableDao.findClassTimetable(className, tttUserId)
+            val futureMaybeClassTimetable: Future[Option[ClassTimetable]] = classTimetableDao.findClassTimetable(classId, tttUserId)
             processClassTimetableFuture(futureMaybeClassTimetable)
           }
       }

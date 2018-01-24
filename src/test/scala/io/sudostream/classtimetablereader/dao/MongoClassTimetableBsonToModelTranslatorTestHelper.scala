@@ -7,7 +7,7 @@ trait MongoClassTimetableBsonToModelTranslatorTestHelper {
   def createValidClassTimetableBson(): BsonDocument = {
     BsonDocument(
       "epochMillisUTC" -> BsonNumber(1513093735330L),
-      "className" -> BsonString("P3AB"),
+      "classId" -> BsonString("P3AB"),
       "classTimetablesForSpecificClass" -> BsonDocument(
         "schoolTimes" -> createSchoolTimesArray(),
         "allSessionsOfTheWeek" -> createAllSessionsOfTheWeekArray()
