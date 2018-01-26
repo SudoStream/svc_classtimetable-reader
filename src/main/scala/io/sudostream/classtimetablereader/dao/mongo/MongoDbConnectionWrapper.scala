@@ -7,4 +7,6 @@ trait MongoDbConnectionWrapper {
   def getClassTimetableCollection: MongoCollection[Document]
 
   def getClassesCollection: MongoCollection[Document]
+
+  def ensureIndexes()
 }

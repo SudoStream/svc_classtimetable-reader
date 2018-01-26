@@ -10,11 +10,13 @@ import com.mongodb.connection.ClusterSettings
 import com.typesafe.config.ConfigFactory
 import io.sudostream.classtimetablereader.Main
 import io.sudostream.classtimetablereader.config.ActorSystemWrapper
+import org.mongodb.scala.bson.BsonDocument
 import org.mongodb.scala.connection.{NettyStreamFactoryFactory, SslSettings}
 import org.mongodb.scala.{Document, MongoClient, MongoClientSettings, MongoCollection, MongoDatabase, ServerAddress}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContextExecutor
+import scala.util.{Failure, Success}
 
 sealed class MongoDbConnectionWrapperImpl(actorSystemWrapper: ActorSystemWrapper) extends MongoDbConnectionWrapper {
 
@@ -83,6 +85,17 @@ sealed class MongoDbConnectionWrapperImpl(actorSystemWrapper: ActorSystemWrapper
   override def getClassesCollection: MongoCollection[Document] = {
     val database: MongoDatabase = createMongoClient.getDatabase(classTimetableDatabaseName)
     database.getCollection(classesCollectionName)
+  }
+
+  override def ensureIndexes(): Unit = {
+    val teachersWithWriteAccessIndex = BsonDocument(ClassDetailsMongoDbSchema.TEACHERS_WITH_WRITE_ACCESS -> 1)
+    log.info(s"Ensuring index created : ${teachersWithWriteAccessIndex.toString}")
+    val obs = getClassesCollection.createIndex(teachersWithWriteAccessIndex)
+    obs.toFuture().onComplete {
+      case Success(msg) => log.info(s"Ensure index attempt completed with msg : $msg")
+      case Failure(ex) => log.info(s"Ensure index failed to complete: ${ex.getMessage}")
+    }
+
   }
 }
 

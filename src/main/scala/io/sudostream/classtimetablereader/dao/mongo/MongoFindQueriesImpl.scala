@@ -39,6 +39,7 @@ class MongoFindQueriesImpl(mongoDbConnectionWrapper: MongoDbConnectionWrapper) e
 
   val classTimetableCollection: MongoCollection[Document] = mongoDbConnectionWrapper.getClassTimetableCollection
 
+  mongoDbConnectionWrapper.ensureIndexes()
 
   override def findClassTimetable(classId: ClassId, timeToTeachId: TimeToTeachId): Future[Option[BsonDocument]] = {
     import scala.collection.JavaConversions._
