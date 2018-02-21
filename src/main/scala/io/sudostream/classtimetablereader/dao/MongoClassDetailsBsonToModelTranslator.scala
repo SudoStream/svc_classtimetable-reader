@@ -25,7 +25,7 @@ class MongoClassDetailsBsonToModelTranslator() {
       groupName = classGroupAsDoc.getString(ClassDetailsMongoDbSchema.GROUP_NAME).getValue
       groupDescription = classGroupAsDoc.getString(ClassDetailsMongoDbSchema.GROUP_DESCRIPTION).getValue
       groupType = classGroupAsDoc.getString(ClassDetailsMongoDbSchema.GROUP_TYPE).getValue match {
-        case "MATHS" => GroupType.MATHS
+        case "MATHS" | "MATHEMATICS" => GroupType.MATHEMATICS
         case "READING" => GroupType.READING
         case "WRITING" => GroupType.WRITING
         case "SPELLING" => GroupType.SPELLING

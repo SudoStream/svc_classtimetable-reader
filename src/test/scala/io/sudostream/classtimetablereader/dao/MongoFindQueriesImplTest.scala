@@ -172,19 +172,19 @@ class MongoFindQueriesImplTest extends FunSuite {
         BsonDocument(
           "groupId" -> "groupId_513ca5d4-d1c1-4e7f-a9af-025fe1eb68d3",
           "groupName" -> "triangles",
-          "groupType" -> "MATHS",
+          "groupType" -> "MATHEMATICS",
           "groupLevel" -> "EARLY"
         ),
         BsonDocument(
           "groupId" -> "groupId_c2322b92-88bb-46c7-8a88-e8c11656e78a",
           "groupName" -> "squares",
-          "groupType" -> "MATHS",
+          "groupType" -> "MATHEMATICS",
           "groupLevel" -> "FIRST"
         ),
         BsonDocument(
           "groupId" -> "groupId_01d9e731-cc30-405f-b090-263ec9ecafe3",
           "groupName" -> "circles",
-          "groupType" -> "MATHS",
+          "groupType" -> "MATHEMATICS",
           "groupLevel" -> "FIRST"
         )
       ),
@@ -226,19 +226,19 @@ class MongoFindQueriesImplTest extends FunSuite {
         BsonDocument(
           "groupId" -> "groupId_513ca5d4-d1c1-4e7f-a9af-025fe1eb68t1",
           "groupName" -> "blues",
-          "groupType" -> "MATHS",
+          "groupType" -> "MATHEMATICS",
           "groupLevel" -> "EARLY"
         ),
         BsonDocument(
           "groupId" -> "groupId_c2322b92-88bb-46c7-8a88-e8c11656e78u1",
           "groupName" -> "reds",
-          "groupType" -> "MATHS",
+          "groupType" -> "MATHEMATICS",
           "groupLevel" -> "FIRST"
         ),
         BsonDocument(
           "groupId" -> "groupId_01d9e731-cc30-405f-b090-263ec9ecafi1",
           "groupName" -> "yellows",
-          "groupType" -> "MATHS",
+          "groupType" -> "MATHEMATICS",
           "groupLevel" -> "FIRST"
         )
       ),
